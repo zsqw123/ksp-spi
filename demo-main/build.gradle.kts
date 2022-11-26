@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     application
+    id("com.google.devtools.ksp") version "1.7.21-1.0.8"
 }
 
 group = "com.zsu"
@@ -20,3 +21,8 @@ tasks.getByName<Test>("test") {
 }
 
 application.mainClass.set("com.zsu.demo.main.MainKt")
+
+ksp {
+    arg("spi-loader-type", "main")
+}
+

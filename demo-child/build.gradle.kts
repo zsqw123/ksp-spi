@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    id("com.google.devtools.ksp") version "1.7.21-1.0.8"
 }
 
 group = "com.zsu"
@@ -15,4 +16,9 @@ dependencies {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+ksp {
+    arg("spi-loader-type", "child")
+    arg("spi-loader-name", project.name)
 }

@@ -2,7 +2,7 @@ package com.zsu.demo.child
 
 import com.zsu.demo.api.UserService
 
-class ChildUserService : UserService {
-    override val name: String = "child"
+class BobUserService : UserService {
+    override val name: String = "Bob"
     override fun login(): Boolean = false
 }
