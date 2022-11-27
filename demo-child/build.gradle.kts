@@ -1,12 +1,13 @@
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp") version "1.7.21-1.0.8"
+    id("com.google.devtools.ksp")
 }
 
 group = "com.zsu"
 version = "1.0-SNAPSHOT"
 
 dependencies {
+    ksp(project(":spi-plugin"))
     implementation(project(":spi-api"))
     implementation(project(":demo-api"))
 
@@ -19,6 +20,5 @@ tasks.getByName<Test>("test") {
 }
 
 ksp {
-    arg("spi-loader-type", "child")
     arg("spi-loader-name", project.name)
 }

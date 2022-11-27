@@ -13,28 +13,32 @@ class SpiFileGenerator(private val env: SpiLoaderEnv) {
     private val fileLevelSuppressAnnotation = AnnotationSpec.builder(Suppress::class)
         .addMember("%S", "DEPRECATION_ERROR").build()
 
-    fun generateSubSpiBridgeFile(singleModuleSpi: SingleModuleSpi): FileSpec {
+    fun generateSubSpiBridgeFile(singleModuleSpi: SingleModuleSpi): FileSpec? {
+        if (singleModuleSpi.allSpiFqn.isEmpty() &&
+            singleModuleSpi.allSpiImpl.isEmpty()
+        ) return null
         val ghostAnnotation = AnnotationSpec
             .builder(SpiMeta::class.asTypeName())
             .addMember("meta = %S", Json.encodeToString(singleModuleSpi))
             .build()
-        val ghostProp = PropertySpec.builder(env.loaderName, ANY)
+        val ghostClass = TypeSpec.classBuilder(env.loaderName)
             .addAnnotation(ghostAnnotation)
-            .initializer(CodeBlock.of("%L", "1"))
             .build()
-        return FileSpec.builder(PKG_SINGLE_MODULE_SPI, "spi")
-            .addProperty(ghostProp)
+        return FileSpec.builder(PKG_SINGLE_MODULE_SPI, env.loaderName)
+            .addAnnotation(fileLevelSuppressAnnotation)
+            .addType(ghostClass)
             .build()
     }
 
-    fun generateMainSpiFile(allSpi: AllSpi): FileSpec {
+    fun generateMainSpiFile(allSpi: AllSpi): FileSpec? {
+        if (allSpi.isEmpty()) return null
         val tTypeVariable = TypeVariableName("T")
 
         val allImplFunBuilder = FunSpec.builder("getAllImpl")
             .addModifiers(KModifier.OVERRIDE)
             .addTypeVariable(tTypeVariable)
             .addParameter("clazz", Class::class.asTypeName().parameterizedBy(tTypeVariable))
-            .addStatement("return when (clazz.canonicalName) {")
+            .addStatement("val result = when (clazz.canonicalName) {")
             .returns(List::class.asTypeName().parameterizedBy(tTypeVariable))
 
         for (singleSpi in allSpi) allImplFunBuilder.apply {
@@ -43,8 +47,9 @@ class SpiFileGenerator(private val env: SpiLoaderEnv) {
         }
 
         allImplFunBuilder.apply {
-            addStatement("else -> emptyList()")
+            addStatement("else -> emptyList<T>()")
             addStatement("}")
+            addStatement("return result")
         }
 
         val realLoaderClassName = TypeSpec.classBuilder(RealSpiLoader.SPI_LOADER_REAL_IMPL)
@@ -58,5 +63,3 @@ class SpiFileGenerator(private val env: SpiLoaderEnv) {
             .build()
     }
 }
-
-private const val PKG_SINGLE_MODULE_SPI = "com.zsu.ksp.spi.single"

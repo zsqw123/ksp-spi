@@ -14,8 +14,8 @@ annotation class Spi
 annotation class SpiImpl
 
 @Deprecated("Don't use it direct.", level = DeprecationLevel.ERROR)
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
+@Suppress("unused")
 annotation class SpiMeta(
     val meta: String,
 )
@@ -47,4 +47,9 @@ interface RealSpiLoader {
         const val PKG_SPI_LOADER_REAL_IMPL = "com.zsu.ksp.spi.inject"
         const val SPI_LOADER_REAL_IMPL = "RealSpiLoaderImpl"
     }
+}
+
+@Deprecated("Don't use it direct.", level = DeprecationLevel.ERROR)
+interface RealSubSpiLoader {
+    fun <T> getAllImpl(clazz: Class<T>): List<T>
 }
