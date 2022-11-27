@@ -49,15 +49,15 @@ class SpiFileGenerator(private val env: SpiLoaderEnv) {
         allImplFunBuilder.apply {
             addStatement("else -> emptyList<T>()")
             addStatement("}")
-            addStatement("return result")
+            addStatement("return result as List<T>")
         }
 
-        val realLoaderClassName = TypeSpec.classBuilder(RealSpiLoader.SPI_LOADER_REAL_IMPL)
+        val realLoaderClassName = TypeSpec.classBuilder(RealSpiLoader.SPI_LOADER_MAIN_IMPL)
             .addSuperinterface(RealSpiLoader::class)
             .addFunction(allImplFunBuilder.build())
             .build()
 
-        return FileSpec.builder(RealSpiLoader.PKG_SPI_LOADER_REAL_IMPL, RealSpiLoader.SPI_LOADER_REAL_IMPL)
+        return FileSpec.builder(RealSpiLoader.PKG_SPI_LOADER_MAIN_IMPL, RealSpiLoader.SPI_LOADER_MAIN_IMPL)
             .addAnnotation(fileLevelSuppressAnnotation)
             .addType(realLoaderClassName)
             .build()

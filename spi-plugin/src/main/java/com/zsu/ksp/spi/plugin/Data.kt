@@ -1,16 +1,21 @@
 package com.zsu.ksp.spi.plugin
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 class SingleModuleSpi(
+    @SerialName("f")
     val allSpiFqn: List<String>,
+    @SerialName("i")
     val allSpiImpl: List<SingleSpiImpl>,
 )
 
 @Serializable
 class SingleSpiImpl(
+    @SerialName("f")
     val implFqn: String,
+    @SerialName("i")
     val impls: List<String>,
 )
 

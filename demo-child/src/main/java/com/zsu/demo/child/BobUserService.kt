@@ -6,5 +6,5 @@ import com.zsu.ksp.spi.api.SpiImpl
 @SpiImpl
 class BobUserService : UserService {
     override val name: String = "Bob"
-    override fun login(): Boolean = false
+    override fun login(): Boolean = true
 }

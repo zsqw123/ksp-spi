@@ -2,8 +2,8 @@
 
 package com.zsu.ksp.spi.api
 
-import com.zsu.ksp.spi.api.RealSpiLoader.Companion.PKG_SPI_LOADER_REAL_IMPL
-import com.zsu.ksp.spi.api.RealSpiLoader.Companion.SPI_LOADER_REAL_IMPL
+import com.zsu.ksp.spi.api.RealSpiLoader.Companion.PKG_SPI_LOADER_MAIN_IMPL
+import com.zsu.ksp.spi.api.RealSpiLoader.Companion.SPI_LOADER_MAIN_IMPL
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
@@ -24,7 +24,7 @@ object SpiLoader {
     @PublishedApi
     internal val ghostLoader: RealSpiLoader by lazy {
         try {
-            Class.forName("$PKG_SPI_LOADER_REAL_IMPL.$SPI_LOADER_REAL_IMPL")
+            Class.forName("$PKG_SPI_LOADER_MAIN_IMPL.$SPI_LOADER_MAIN_IMPL")
                 .getDeclaredConstructor().newInstance() as RealSpiLoader
         } catch (e: Exception) {
             e.printStackTrace()
@@ -40,16 +40,12 @@ object SpiLoader {
 }
 
 @Deprecated("Don't use it direct.", level = DeprecationLevel.ERROR)
+@Suppress("unused")
 interface RealSpiLoader {
     fun <T> getAllImpl(clazz: Class<T>): List<T>
 
     companion object {
-        const val PKG_SPI_LOADER_REAL_IMPL = "com.zsu.ksp.spi.inject"
-        const val SPI_LOADER_REAL_IMPL = "RealSpiLoaderImpl"
+        const val PKG_SPI_LOADER_MAIN_IMPL = "com.zsu.ksp.spi.inject.main"
+        const val SPI_LOADER_MAIN_IMPL = "RealSpiLoaderImpl"
     }
-}
-
-@Deprecated("Don't use it direct.", level = DeprecationLevel.ERROR)
-interface RealSubSpiLoader {
-    fun <T> getAllImpl(clazz: Class<T>): List<T>
 }

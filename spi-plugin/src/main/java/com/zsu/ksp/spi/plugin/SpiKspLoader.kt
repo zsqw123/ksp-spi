@@ -14,14 +14,18 @@ class SpiKspLoader : SymbolProcessorProvider {
 class SpiProcessor(private val env: SpiLoaderEnv) : SymbolProcessor {
     private val finder = SpiFinder(env)
     private val generator = SpiFileGenerator(env)
+    private var runSuccess = false
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        if (runSuccess) return emptyList()
         return when (env.moduleType) {
             SpiLoaderEnv.ModuleType.MAIN -> processMain(resolver)
             SpiLoaderEnv.ModuleType.CHILD -> processChild(resolver)
-            SpiLoaderEnv.ModuleType.MIX -> {
-                processChild(resolver)
-                processMain(resolver)
-            }
+//            SpiLoaderEnv.ModuleType.MIX -> {
+//                processChild(resolver)
+//                processMain(resolver)
+//            }
+        }.also {
+            runSuccess = true
         }
     }
 
@@ -45,13 +49,13 @@ class SpiLoaderEnv(private val environment: SymbolProcessorEnvironment) {
     enum class ModuleType(val typeName: String) {
         CHILD("child"),
         MAIN("main"),
-        MIX("mix"),
+//        MIX("mix"),
     }
 
     val moduleType: ModuleType by lazy {
         when (environment.options["spi-loader-type"]) {
             "main" -> ModuleType.MAIN
-            "mix" -> ModuleType.MIX
+//            "mix" -> ModuleType.MIX
             else -> ModuleType.CHILD
         }
     }

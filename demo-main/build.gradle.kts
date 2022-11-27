@@ -24,6 +24,6 @@ tasks.getByName<Test>("test") {
 application.mainClass.set("com.zsu.demo.main.MainKt")
 
 ksp {
-    arg("spi-loader-type", "mix")
+    arg("spi-loader-type", "main")
     arg("spi-loader-name", project.name)
 }
