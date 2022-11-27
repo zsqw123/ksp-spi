@@ -4,6 +4,7 @@ package com.zsu.ksp.spi.api
 
 import com.zsu.ksp.spi.api.RealSpiLoader.Companion.PKG_SPI_LOADER_MAIN_IMPL
 import com.zsu.ksp.spi.api.RealSpiLoader.Companion.SPI_LOADER_MAIN_IMPL
+import org.intellij.lang.annotations.Language
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
@@ -17,6 +18,7 @@ annotation class SpiImpl
 @Retention(AnnotationRetention.BINARY)
 @Suppress("unused")
 annotation class SpiMeta(
+    @Language("json")
     val meta: String,
 )
 
